@@ -3,32 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Paper Project | dangpala</title>
-  <link rel="stylesheet" href="../style.css" />
+  <title>Project 1 | dangpala</title>
   <style>
-    /* Two-column layout for project detail */
+    /* Root variables for dark theme */
+    :root {
+      --primary-color: #f5f5f5; /* text color */
+      --secondary-color: #ccc;
+      --accent-color: #ff6600; /* orange accent */
+      --bg-color: #1a1a1a; /* dark background */
+      --glass-bg: rgba(30,30,30,0.7);
+      --glass-border: rgba(255,102,0,0.4);
+      --font-base: 'Helvetica Neue', sans-serif;
+      --line-height: 1.6;
+    }
+
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-base);
+      line-height: var(--line-height);
+      background-color: var(--bg-color);
+      color: var(--primary-color);
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* Glass card */
+    .glass {
+      background: var(--glass-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+
+    /* Header */
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title span {
+      color: var(--accent-color);
+    }
+
+    /* Two-column layout */
     .project-container {
       display: flex;
       flex-wrap: wrap;
       gap: 2rem;
-      margin-top: 3rem;
     }
 
     .project-description, .project-pdf {
       flex: 1 1 400px;
     }
 
-    .project-description p {
-      line-height: 1.6;
+    .project-description h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
     }
 
+    .project-description p {
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+
+    .project-description .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      border: 2px solid var(--accent-color);
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      color: var(--accent-color);
+      background: transparent;
+    }
+
+    .btn.primary:hover {
+      background-color: var(--accent-color);
+      color: #1a1a1a;
+    }
+
+    /* PDF */
     .project-pdf iframe {
       width: 100%;
       height: 600px;
       border: 1px solid var(--glass-border);
       border-radius: 12px;
+      background-color: #000;
     }
 
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--secondary-color);
+    }
+
+    footer p {
+      margin-bottom: 1rem;
+    }
+
+    .socials a {
+      margin: 0 0.3rem;
+      display: inline-block;
+    }
+
+    .socials img {
+      width: 24px;
+      height: 24px;
+      filter: invert(1) sepia(1) saturate(5) hue-rotate(330deg);
+    }
+
+    /* Responsive */
     @media (max-width: 900px) {
       .project-container {
         flex-direction: column;
@@ -37,72 +140,41 @@
         height: 500px;
       }
     }
+
+    @media (max-width: 500px) {
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
-  <header class="navbar glass">
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="projects.html">Projects</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </header>
-  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">☾</button>
+  <div class="container">
 
-  <main class="page-content">
-    <h2 class="section-title">Project <span>Paper</span></h2>
+    <main class="page-content">
+      <h2 class="section-title">Project <span>1</span></h2>
 
-    <div class="project-container glass">
-      <!-- Left: Description -->
-      <div class="project-description">
-        <h3>Paper Title</h3>
-        <p>
-          A short summary of the paper goes here. Explain the purpose of the research,
-          key findings, or the question it addresses in a few sentences.
-        </p>
-        <p>
-          Additional context or highlights can go here, such as methodology or
-          interesting insights.
-        </p>
-        <a href="projects.html" class="btn primary">Back to Projects</a>
+      <div class="project-container glass">
+        <!-- Left: Description -->
+        <div class="project-description">
+          <h3>Project 1 Title</h3>
+          <p>
+            A brief summary of Project 1 goes here. Explain its purpose, key features,
+            or the problem it solves.
+          </p>
+          <p>
+            Additional context, interesting highlights, or technical details can go here.
+          </p>
+          <a href="../" class="btn primary">Back to Projects</a>
+        </div>
+
+        <!-- Right: PDF -->
+        <div class="project-pdf">
+          <iframe src="project1.pdf" title="Project 1 PDF"></iframe>
+        </div>
       </div>
+    </main>
 
-      <!-- Right: Embedded PDF -->
-      <div class="project-pdf">
-        <iframe src="paper.pdf" title="Paper PDF"></iframe>
-      </div>
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>@dangpala 2025</p>
-    <div class="socials">
-      <a href="https://facebook.com" target="_blank" aria-label="Facebook">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg" alt="Facebook" />
-      </a>
-      <a href="https://kofi.com" target="_blank" aria-label="Ko-fi">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/kofi.svg" alt="Ko-fi" />
-      </a>
-      <a href="https://github.com" target="_blank" aria-label="GitHub">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg" alt="GitHub" />
-      </a>
-      <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" />
-      </a>
-      <a href="https://instagram.com" target="_blank" aria-label="Instagram">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg" alt="Instagram" />
-      </a>
-      <a href="https://youtube.com" target="_blank" aria-label="YouTube">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/youtube.svg" alt="YouTube" />
-      </a>
-      <a href="https://x.com" target="_blank" aria-label="X (Twitter)">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg" alt="X" />
-      </a>
-    </div>
-  </footer>
-
-  <script src="../script.js"></script>
+  </div>
 </body>
 </html>

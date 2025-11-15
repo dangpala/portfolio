@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paper Project | dangpala</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    /* Two-column layout for project detail */
+    .project-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .project-description, .project-pdf {
+      flex: 1 1 400px;
+    }
+
+    .project-description p {
+      line-height: 1.6;
+    }
+
+    .project-pdf iframe {
+      width: 100%;
+      height: 600px;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .project-container {
+        flex-direction: column;
+      }
+      .project-pdf iframe {
+        height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar glass">
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">☾</button>
+
+  <main class="page-content">
+    <h2 class="section-title">Project <span>Paper</span></h2>
+
+    <div class="project-container glass">
+      <!-- Left: Description -->
+      <div class="project-description">
+        <h3>Paper Title</h3>
+        <p>
+          A short summary of the paper goes here. Explain the purpose of the research,
+          key findings, or the question it addresses in a few sentences.
+        </p>
+        <p>
+          Additional context or highlights can go here, such as methodology or
+          interesting insights.
+        </p>
+        <a href="projects.html" class="btn primary">Back to Projects</a>
+      </div>
+
+      <!-- Right: Embedded PDF -->
+      <div class="project-pdf">
+        <iframe src="paper.pdf" title="Paper PDF"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>@dangpala 2025</p>
+    <div class="socials">
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg" alt="Facebook" />
+      </a>
+      <a href="https://kofi.com" target="_blank" aria-label="Ko-fi">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/kofi.svg" alt="Ko-fi" />
+      </a>
+      <a href="https://github.com" target="_blank" aria-label="GitHub">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg" alt="GitHub" />
+      </a>
+      <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" />
+      </a>
+      <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg" alt="Instagram" />
+      </a>
+      <a href="https://youtube.com" target="_blank" aria-label="YouTube">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/youtube.svg" alt="YouTube" />
+      </a>
+      <a href="https://x.com" target="_blank" aria-label="X (Twitter)">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg" alt="X" />
+      </a>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+</body>
+</html>

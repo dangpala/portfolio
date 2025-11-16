@@ -115,7 +115,7 @@ body {
   transform: scale(1.01);
 }
 
-/* LIGHTBOX FADE ANIMATION */
+/* LIGHTBOX */
 .lightbox {
   position: fixed;
   top: 0; left: 0;
@@ -124,6 +124,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   z-index: 9999;
 
   opacity: 0;
@@ -135,14 +136,15 @@ body {
   pointer-events: all;
 }
 
-/* IMAGE ZOOM ANIMATION */
-.lightbox img {
-  max-width: 90%; max-height: 90%;
+/* MAIN LIGHTBOX IMAGE */
+.lightbox-main-img {
+  max-width: 90%;
+  max-height: 75%;
   border-radius: 16px;
   transform: scale(0.95);
   transition: transform 0.35s ease;
 }
-.lightbox.active img {
+.lightbox.active .lightbox-main-img {
   transform: scale(1);
 }
 
@@ -163,7 +165,6 @@ body {
   justify-content: space-between;
   padding: 0 40px;
 }
-
 .controls button {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -182,8 +183,30 @@ body {
   background: var(--accent);
   border-color: var(--accent);
 }
-.controls button svg {
-  pointer-events: none;
+.controls button svg { pointer-events: none; }
+
+/* THUMBNAIL STRIP */
+.thumbnail-strip {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 10px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.thumbnail-strip::-webkit-scrollbar { display: none; }
+
+.thumbnail-strip img {
+  height: 70px;
+  border-radius: 10px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.thumbnail-strip img.active-thumb {
+  opacity: 1;
+  transform: scale(1.05);
+  border: 2px solid var(--accent);
 }
 
 @media (max-width: 900px) { .masonry { column-count: 2; } }
@@ -219,23 +242,17 @@ body {
 
     <div class="controls">
       <button onclick="prevImage()" aria-label="Previous image">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-             stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
-
       <button onclick="nextImage()" aria-label="Next image">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-             stroke-linejoin="round">
-          <polyline points="9 6 15 12 9 18"></polyline>
-        </svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
       </button>
     </div>
 
-    <img id="lightbox-img" src="" />
+    <img id="lightbox-img" class="lightbox-main-img" src="" />
+
+    <!-- THUMBNAIL STRIP -->
+    <div class="thumbnail-strip" id="thumb-strip"></div>
   </div>
 
   <script>
@@ -257,7 +274,26 @@ body {
     const galleryImages = document.querySelectorAll('#gallery img');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
+    const thumbStrip = document.getElementById('thumb-strip');
     let currentIndex = 0;
+
+    /* BUILD THUMB STRIP */
+    galleryImages.forEach((img, index) => {
+      const thumb = img.cloneNode();
+      thumb.classList.add('thumb');
+      thumb.addEventListener('click', () => {
+        currentIndex = index;
+        updateLightbox();
+      });
+      thumbStrip.appendChild(thumb);
+    });
+
+    const thumbImages = thumbStrip.querySelectorAll('img');
+
+    function highlightThumb() {
+      thumbImages.forEach((t, i) => t.classList.toggle('active-thumb', i === currentIndex));
+      thumbImages[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+    }
 
     galleryImages.forEach((img, index) => {
       img.addEventListener('click', () => {
@@ -268,21 +304,31 @@ body {
 
     function openLightbox() {
       lightbox.classList.add('active');
-      lightboxImg.src = galleryImages[currentIndex].src;
+      updateLightbox();
     }
 
     function closeLightbox() {
       lightbox.classList.remove('active');
     }
 
+    function updateLightbox() {
+      lightboxImg.style.opacity = 0;
+      setTimeout(() => {
+        lightboxImg.src = galleryImages[currentIndex].src;
+        lightboxImg.style.opacity = 1;
+      }, 150);
+
+      highlightThumb();
+    }
+
     function nextImage() {
       currentIndex = (currentIndex + 1) % galleryImages.length;
-      lightboxImg.src = galleryImages[currentIndex].src;
+      updateLightbox();
     }
 
     function prevImage() {
       currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-      lightboxImg.src = galleryImages[currentIndex].src;
+      updateLightbox();
     }
 
     lightbox.addEventListener('click', (e) => {
@@ -298,14 +344,14 @@ body {
       if (e.key === 'Escape') closeLightbox();
     });
 
-    /* SWIPE SUPPORT */
+    /* SWIPE SUPPORT WITH ANIMATION */
     let startX = 0;
 
-    lightbox.addEventListener("touchstart", (e) => {
+    lightboxImg.addEventListener("touchstart", (e) => {
       startX = e.touches[0].clientX;
     });
 
-    lightbox.addEventListener("touchend", (e) => {
+    lightboxImg.addEventListener("touchend", (e) => {
       const endX = e.changedTouches[0].clientX;
       const diff = endX - startX;
 

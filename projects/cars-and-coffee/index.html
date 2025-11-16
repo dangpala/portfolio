@@ -38,6 +38,24 @@ body {
   --glass-border: rgba(0, 0, 0, 0.15);
 }
 
+/* BUTTONS */
+.btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-block;
+  transition: 0.3s;
+  margin-top: 1rem;
+}
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn.primary:hover {
+  background: #e05200;
+}
+
 /* THEME TOGGLE BUTTON */
 .theme-toggle {
   position: fixed; top: 1rem; right: 1rem;
@@ -97,20 +115,37 @@ body {
   transform: scale(1.01);
 }
 
-/* LIGHTBOX */
+/* LIGHTBOX FADE ANIMATION */
 .lightbox {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
   background: rgba(0,0,0,0.92);
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
+.lightbox.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* IMAGE ZOOM ANIMATION */
 .lightbox img {
-  max-width: 90%; max-height: 90%; border-radius: 16px;
+  max-width: 90%; max-height: 90%;
+  border-radius: 16px;
+  transform: scale(0.95);
+  transition: transform 0.35s ease;
 }
+.lightbox.active img {
+  transform: scale(1);
+}
+
 .close-btn {
   position: absolute;
   top: 25px; right: 40px;
@@ -118,24 +153,37 @@ body {
   cursor: pointer;
   color: #fff;
 }
+
 .controls {
   position: absolute;
-  top: 50%; width: 100%; transform: translateY(-50%);
-  display: flex; justify-content: space-between;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40px;
 }
+
 .controls button {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  padding: 15px 20px;
   color: var(--text);
   border-radius: 50%;
   font-size: 20px;
   cursor: pointer;
   transition: 0.2s;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .controls button:hover {
   background: var(--accent);
   border-color: var(--accent);
+}
+.controls button svg {
+  pointer-events: none;
 }
 
 @media (max-width: 900px) { .masonry { column-count: 2; } }
@@ -147,7 +195,11 @@ body {
   <button id="theme-toggle" class="theme-toggle">☾</button>
 
   <main class="page-content">
-    <h2 class="section-title">Photo <span>Portfolio</span></h2>
+    <h2 class="section-title">Cars & <span>Coffee</span></h2>
+
+    <a href="../" class="btn primary" style="margin: 0 auto; display: table; margin-top: 1.5rem;">
+      Back to Projects
+    </a>
 
     <div class="glass" style="padding: 2rem; margin-top: 2rem;">
       <div class="masonry" id="gallery">
@@ -164,10 +216,25 @@ body {
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox">
     <span class="close-btn" onclick="closeLightbox()">&times;</span>
+
     <div class="controls">
-      <button onclick="prevImage()">&#10094;</button>
-      <button onclick="nextImage()">&#10095;</button>
+      <button onclick="prevImage()" aria-label="Previous image">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <button onclick="nextImage()" aria-label="Next image">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round">
+          <polyline points="9 6 15 12 9 18"></polyline>
+        </svg>
+      </button>
     </div>
+
     <img id="lightbox-img" src="" />
   </div>
 
@@ -200,14 +267,19 @@ body {
     });
 
     function openLightbox() {
-      lightbox.style.display = 'flex';
+      lightbox.classList.add('active');
       lightboxImg.src = galleryImages[currentIndex].src;
     }
-    function closeLightbox() { lightbox.style.display = 'none'; }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+    }
+
     function nextImage() {
       currentIndex = (currentIndex + 1) % galleryImages.length;
       lightboxImg.src = galleryImages[currentIndex].src;
     }
+
     function prevImage() {
       currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
       lightboxImg.src = galleryImages[currentIndex].src;
@@ -215,6 +287,32 @@ body {
 
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) closeLightbox();
+    });
+
+    /* KEYBOARD NAVIGATION */
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    /* SWIPE SUPPORT */
+    let startX = 0;
+
+    lightbox.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+    });
+
+    lightbox.addEventListener("touchend", (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const diff = endX - startX;
+
+      if (Math.abs(diff) > 50) {
+        if (diff < 0) nextImage();
+        else prevImage();
+      }
     });
   </script>
 

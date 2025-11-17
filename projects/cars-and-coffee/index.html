@@ -56,27 +56,34 @@ body {
   background: #e05200;
 }
 
-/* THEME TOGGLE BUTTON */
+/* THEME TOGGLE */
 .theme-toggle {
-  position: fixed; top: 1rem; right: 1rem;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
   background: none;
   border: 1px solid var(--border);
   color: var(--text);
   border-radius: 50%;
-  width: 42px; height: 42px;
+  width: 42px;
+  height: 42px;
   font-size: 1.2rem;
   cursor: pointer;
-  z-index: 200;
-  display: flex; align-items: center; justify-content: center;
-  transition: 0.3s;
+  z-index: 15000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
 }
-.theme-toggle:hover { transform: scale(1.08); }
+.theme-toggle.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* GLASS */
 .glass {
   background: var(--glass-bg);
   backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
   border: 1px solid var(--glass-border);
   border-radius: 18px;
 }
@@ -92,11 +99,9 @@ body {
   font-size: 2.4rem;
   font-weight: 700;
   text-align: center;
-  padding-top: 2.4rem;
 }
-.section-title span { color: var(--accent); }
 
-/* MASONRY */
+/* MASONRY GRID */
 .masonry {
   column-count: 3;
   column-gap: 15px;
@@ -104,10 +109,10 @@ body {
 }
 .masonry img {
   width: 100%;
-  display: block;
-  margin-bottom: 15px;
   border-radius: 12px;
+  margin-bottom: 15px;
   cursor: pointer;
+  display: block;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .masonry img:hover {
@@ -120,88 +125,121 @@ body {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: rgba(0,0,0,0.92);
+  background: rgba(0,0,0,0.95);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   z-index: 9999;
-
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease;
 }
 .lightbox.active {
   opacity: 1;
-  pointer-events: all;
+  pointer-events: auto;
 }
 
-/* MAIN LIGHTBOX IMAGE */
-.lightbox-main-img {
-  max-width: 90%;
-  max-height: 75%;
-  border-radius: 16px;
-  transform: scale(0.95);
-  transition: transform 0.35s ease;
-}
-.lightbox.active .lightbox-main-img {
-  transform: scale(1);
-}
-
+/* CLOSE BUTTON */
 .close-btn {
   position: absolute;
-  top: 25px; right: 40px;
-  font-size: 40px;
+  top: 20px;
+  right: 25px;
   cursor: pointer;
-  color: #fff;
+  width: 40px;
+  height: 40px;
+  z-index: 12000;
+}
+.close-btn svg {
+  width: 40px;
+  height: 40px;
+  stroke: white;
+  stroke-width: 2;
+  fill: none;
 }
 
+/* MAIN IMAGE */
+.lightbox-main-img {
+  max-width: 90%;
+  max-height: 70%;
+  border-radius: 14px;
+  transition: opacity 0.25s ease;
+  touch-action: pan-y; /* allow horizontal touch handling for our swipe logic */
+}
+
+/* ARROW CONTROLS - default visible on desktop; hidden on mobile until tapped */
 .controls {
   position: absolute;
   top: 50%;
   width: 100%;
+  padding: 0 40px;
   transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
-  padding: 0 40px;
+  pointer-events: none; /* won't block the image while hidden */
+  opacity: 1;
+  transition: opacity 0.28s ease;
 }
 .controls button {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  transition: 0.2s;
   width: 55px;
   height: 55px;
+  pointer-events: auto;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.controls button:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+.controls button svg {
+  width: 26px;
+  height: 26px;
+  stroke: white;
+  stroke-width: 2;
+  fill: none;
 }
-.controls button svg { pointer-events: none; }
 
-/* THUMBNAIL STRIP */
+/* Mobile-specific: start hidden, show when .mobile-visible is set */
+@media (max-width: 768px) {
+  .controls { opacity: 0; pointer-events: none; }
+  .controls.mobile-visible { opacity: 1; pointer-events: auto; }
+  /* slightly smaller controls on small devices */
+  .controls button { width: 48px; height: 48px; }
+}
+
+/* THUMB STRIP */
 .thumbnail-strip {
+  position: absolute;
+  bottom: 15px;
+  width: 100%;
   display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
   gap: 10px;
-  margin-top: 20px;
-  padding: 10px 0;
+  padding: 10px;
   overflow-x: auto;
+  white-space: nowrap;
   scrollbar-width: none;
+  max-width: 900px;
+  margin: 0 auto;
 }
-.thumbnail-strip::-webkit-scrollbar { display: none; }
-
+/* Desktop: center the thumbnail strip visually */
+@media (min-width: 769px) {
+  .thumbnail-strip {
+    width: auto; /* size to content */
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+    max-width: 900px;
+  }
+}
 .thumbnail-strip img {
   height: 70px;
   border-radius: 10px;
   cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0.45;
+  transition: 0.18s ease;
 }
 .thumbnail-strip img.active-thumb {
   opacity: 1;
@@ -215,147 +253,302 @@ body {
 </head>
 
 <body>
-  <button id="theme-toggle" class="theme-toggle">☾</button>
 
-  <main class="page-content">
-    <h2 class="section-title">Cars & <span>Coffee</span></h2>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">☾</button>
 
-    <a href="../" class="btn primary" style="margin: 0 auto; display: table; margin-top: 1.5rem;">
-      Back to Projects
-    </a>
+<main class="page-content">
+  <h2 class="section-title">Cars & <span style="color: var(--accent)">Coffee</span></h2>
 
-    <div class="glass" style="padding: 2rem; margin-top: 2rem;">
-      <div class="masonry" id="gallery">
-        <img src="img1.png" />
-        <img src="img2.png" />
-        <img src="img3.png" />
-        <img src="img4.png" />
-        <img src="img5.png" />
-        <img src="img6.png" />
-      </div>
+  <a href="../" class="btn primary" style="margin: 0 auto; display: table;">
+    Back to Projects
+  </a>
+
+  <div class="glass" style="padding: 2rem; margin-top: 2rem;">
+    <div class="masonry" id="gallery">
+      <img src="img1.png" alt="Car 1">
+      <img src="img2.png" alt="Car 2">
+      <img src="img3.png" alt="Car 3">
+      <img src="img4.png" alt="Car 4">
+      <img src="img5.png" alt="Car 5">
+      <img src="img6.png" alt="Car 6">
+      <img src="img7.png" alt="Car 7">
+      <img src="img8.png" alt="Car 8">
+      <img src="img9.png" alt="Car 9">
+      <img src="img10.png" alt="Car 10">
+      <img src="img11.png" alt="Car 11">
     </div>
-  </main>
+  </div>
+</main>
 
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox">
-    <span class="close-btn" onclick="closeLightbox()">&times;</span>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
 
-    <div class="controls">
-      <button onclick="prevImage()" aria-label="Previous image">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-      </button>
-      <button onclick="nextImage()" aria-label="Next image">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
-      </button>
-    </div>
-
-    <img id="lightbox-img" class="lightbox-main-img" src="" />
-
-    <!-- THUMBNAIL STRIP -->
-    <div class="thumbnail-strip" id="thumb-strip"></div>
+  <div class="close-btn" onclick="closeLightbox()" role="button" aria-label="Close lightbox">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M18 6L6 18M6 6l12 12" />
+    </svg>
   </div>
 
-  <script>
-    const toggleBtn = document.getElementById("theme-toggle");
-    const body = document.body;
+  <div class="controls" id="controls">
+    <button id="prevBtn" onclick="prevImage()" aria-label="Previous image">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+    </button>
 
-    if (localStorage.getItem("theme") === "light") {
-      body.classList.add("light");
-      toggleBtn.textContent = "☀";
-    }
+    <button id="nextBtn" onclick="nextImage()" aria-label="Next image">
+      <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" /></svg>
+    </button>
+  </div>
 
-    toggleBtn.addEventListener("click", () => {
-      body.classList.toggle("light");
-      const isLight = body.classList.contains("light");
-      toggleBtn.textContent = isLight ? "☀" : "☾";
-      localStorage.setItem("theme", isLight ? "light" : "dark");
-    });
+  <img id="lightbox-img" class="lightbox-main-img" alt="Expanded photo">
 
-    const galleryImages = document.querySelectorAll('#gallery img');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const thumbStrip = document.getElementById('thumb-strip');
-    let currentIndex = 0;
+  <div class="thumbnail-strip" id="thumb-strip" aria-hidden="false"></div>
+</div>
 
-    /* BUILD THUMB STRIP */
-    galleryImages.forEach((img, index) => {
-      const thumb = img.cloneNode();
-      thumb.classList.add('thumb');
-      thumb.addEventListener('click', () => {
-        currentIndex = index;
-        updateLightbox();
-      });
-      thumbStrip.appendChild(thumb);
-    });
+<script>
+/* Prevent re-init if script included twice */
+if (!window.__galleryLoaded) {
+  window.__galleryLoaded = true;
 
-    const thumbImages = thumbStrip.querySelectorAll('img');
+  const toggleBtn = document.getElementById("theme-toggle");
+  const body = document.body;
+  const galleryImages = document.querySelectorAll("#gallery img");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const thumbStrip = document.getElementById("thumb-strip");
+  const controls = document.getElementById("controls");
 
-    function highlightThumb() {
-      thumbImages.forEach((t, i) => t.classList.toggle('active-thumb', i === currentIndex));
-      thumbImages[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'center' });
-    }
+  let currentIndex = 0;
+  let hideControlsTimer = null;
+  let startX = 0;
+  let isTouching = false;
 
-    galleryImages.forEach((img, index) => {
-      img.addEventListener('click', () => {
-        currentIndex = index;
-        openLightbox();
-      });
-    });
+  /* THEME RESTORE */
+  if (localStorage.getItem("theme") === "light") {
+    body.classList.add("light");
+    toggleBtn.textContent = "☀";
+  }
 
-    function openLightbox() {
-      lightbox.classList.add('active');
+  toggleBtn.addEventListener("click", () => {
+    body.classList.toggle("light");
+    const isLight = body.classList.contains("light");
+    toggleBtn.textContent = isLight ? "☀" : "☾";
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+  });
+
+  /* BUILD THUMBNAILS */
+  galleryImages.forEach((img, index) => {
+    const t = img.cloneNode();
+    t.setAttribute('data-idx', index);
+    t.addEventListener("click", (e) => {
+      currentIndex = index;
       updateLightbox();
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove('active');
-    }
-
-    function updateLightbox() {
-      lightboxImg.src = galleryImages[currentIndex].src;
-      highlightThumb();
-    }
-
-    function nextImage() {
-      currentIndex = (currentIndex + 1) % galleryImages.length;
-      updateLightbox();
-    }
-
-    function prevImage() {
-      currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-      updateLightbox();
-    }
-
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) closeLightbox();
+      // keep lightbox open if it was open
+      openLightbox();
+      // ensure mobile controls show briefly so user knows they can tap arrows
+      showControlsMobile();
+      e.stopPropagation();
     });
+    thumbStrip.appendChild(t);
+  });
 
-    /* KEYBOARD NAVIGATION */
-    document.addEventListener('keydown', (e) => {
-      if (!lightbox.classList.contains('active')) return;
+  const thumbImgs = thumbStrip.querySelectorAll("img");
 
-      if (e.key === 'ArrowRight') nextImage();
-      if (e.key === 'ArrowLeft') prevImage();
-      if (e.key === 'Escape') closeLightbox();
+  function highlightThumb() {
+    thumbImgs.forEach((t, i) => {
+      t.classList.toggle("active-thumb", i === currentIndex);
     });
+    // try to center the active thumbnail
+    if (thumbImgs[currentIndex]) {
+      thumbImgs[currentIndex].scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  }
 
-    /* SWIPE SUPPORT WITH ANIMATION */
-    let startX = 0;
+  /* OPEN FROM GALLERY */
+  galleryImages.forEach((img, index) => {
+    img.addEventListener("click", () => {
+      currentIndex = index;
+      openLightbox();
+    });
+  });
 
-    lightboxImg.addEventListener("touchstart", (e) => {
+  function openLightbox() {
+    lightbox.classList.add("active");
+    lightbox.setAttribute('aria-hidden', 'false');
+
+    /* hide + disable theme toggle so taps don't hit it */
+    toggleBtn.classList.add("hidden");
+
+    updateLightbox();
+    // show mobile controls briefly when opened (for Option B)
+    showControlsMobile();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("active");
+    lightbox.setAttribute('aria-hidden', 'true');
+
+    /* show + re-enable theme toggle */
+    toggleBtn.classList.remove("hidden");
+    // ensure controls hidden on mobile
+    hideControlsMobileImmediate();
+  }
+
+  /* UPDATE */
+  function updateLightbox() {
+    const src = galleryImages[currentIndex].src;
+    lightboxImg.src = src;
+    lightboxImg.alt = galleryImages[currentIndex].alt || `Photo ${currentIndex + 1}`;
+    highlightThumb();
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % galleryImages.length;
+    updateLightbox();
+    // show controls so user sees change
+    showControlsMobile();
+  }
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+    updateLightbox();
+    // show controls so user sees change
+    showControlsMobile();
+  }
+
+  window.nextImage = nextImage;
+  window.prevImage = prevImage;
+  window.closeLightbox = closeLightbox;
+
+  /* CLICK OUTSIDE: close if background clicked */
+  lightbox.addEventListener("click", (e) => {
+    // If user clicked / tapped exactly the background area, close
+    if (e.target === lightbox) {
+      closeLightbox();
+      return;
+    }
+
+    // If they tapped the image (or anything inside), on mobile we show controls
+    // But we also stop propagation here so thumb clicks don't bubble oddly
+    // Note: clicks on the controls themselves will work because pointer-events are enabled when visible
+  });
+
+  /* KEYBOARD */
+  document.addEventListener("keydown", (e) => {
+    if (!lightbox.classList.contains("active")) return;
+    if (e.key === "ArrowRight") nextImage();
+    if (e.key === "ArrowLeft") prevImage();
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  /* SWIPE - basic horizontal swipe on the image */
+  lightboxImg.addEventListener("touchstart", (e) => {
+    if (e.touches && e.touches[0]) {
       startX = e.touches[0].clientX;
-    });
+      isTouching = true;
+    }
+  }, { passive: true });
 
-    lightboxImg.addEventListener("touchend", (e) => {
-      const endX = e.changedTouches[0].clientX;
-      const diff = endX - startX;
+  lightboxImg.addEventListener("touchmove", (e) => {
+    // prevent accidental page horizontal scroll when swiping image
+    // we won't call preventDefault here to keep it safe; touch-action CSS helps
+  }, { passive: true });
 
-      if (Math.abs(diff) > 50) {
-        if (diff < 0) nextImage();
-        else prevImage();
-      }
-    });
-  </script>
+  lightboxImg.addEventListener("touchend", (e) => {
+    if (!isTouching) return;
+    isTouching = false;
+    const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : startX;
+    const diff = endX - startX;
+    if (Math.abs(diff) > 50) {
+      if (diff < 0) nextImage();
+      else prevImage();
+    } else {
+      // treat as a tap (no significant move) => show mobile controls
+      showControlsMobile();
+    }
+  });
 
+  // Make desktop clicks/taps on the image show controls briefly as well (useful for touch laptops)
+  lightboxImg.addEventListener("click", (e) => {
+    showControlsMobile();
+    e.stopPropagation();
+  });
+
+  /* MOBILE CHECK */
+  function isMobile() {
+    return window.matchMedia("(max-width: 768px)").matches;
+  }
+
+  /* CONTROLS SHOW/HIDE LOGIC FOR OPTION B */
+  function showControlsMobile(duration = 2000) {
+    // If not mobile, ensure controls visible (desktop)
+    if (!isMobile()) {
+      controls.classList.remove('mobile-visible');
+      controls.style.opacity = ''; // use CSS default (visible on desktop)
+      controls.style.pointerEvents = '';
+      return;
+    }
+
+    // add class to make them visible and interactive
+    controls.classList.add('mobile-visible');
+
+    // clear any existing timer
+    if (hideControlsTimer) {
+      clearTimeout(hideControlsTimer);
+    }
+    // schedule hide after duration ms
+    hideControlsTimer = setTimeout(() => {
+      hideControlsMobileImmediate();
+    }, duration);
+  }
+
+  function hideControlsMobileImmediate() {
+    if (hideControlsTimer) {
+      clearTimeout(hideControlsTimer);
+      hideControlsTimer = null;
+    }
+    // remove the mobile-visible class so it hides and becomes non-interactive
+    controls.classList.remove('mobile-visible');
+  }
+
+  // If the user resizes (e.g., rotates phone), reset controls state
+  window.addEventListener('resize', () => {
+    // on desktop we want controls interactive; on mobile we default to hidden
+    if (!isMobile()) {
+      controls.classList.remove('mobile-visible');
+      controls.style.opacity = '';
+      controls.style.pointerEvents = '';
+    } else {
+      // hide them on mobile change
+      hideControlsMobileImmediate();
+    }
+  });
+
+  /* Initialize highlight for thumbnails (if gallery exists) */
+  highlightThumb();
+
+  /* Accessibility: allow focus on next/prev via buttons */
+  document.getElementById('nextBtn').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') nextImage();
+  });
+  document.getElementById('prevBtn').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') prevImage();
+  });
+
+  /* Make sure thumbnails are clickable and update currentIndex if clicked (already set when cloned) */
+  thumbStrip.addEventListener('click', (e) => {
+    const t = e.target.closest('img[data-idx]');
+    if (!t) return;
+    const idx = Number(t.getAttribute('data-idx'));
+    if (!Number.isNaN(idx)) {
+      currentIndex = idx;
+      updateLightbox();
+      showControlsMobile();
+    }
+  });
+
+  // Expose functions for debugging if needed
+  window.__showControlsMobile = showControlsMobile;
+  window.__hideControlsMobileImmediate = hideControlsMobileImmediate;
+}
+</script>
 </body>
 </html>
